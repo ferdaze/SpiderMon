@@ -9,12 +9,12 @@ import requests
 from datetime import datetime, timedelta, timezone
 
 # Configuration
-DESTINATIONS_URL = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/destinations.json"
+DESTINATIONS_URL = "https://raw.githubusercontent.com/ferdaze/Spider-Mon/refs/heads/main/destinations.json"
 CACHE_FILE = "cached_destinations.json"
-CACHE_TTL = 86400  # 1 day
+CACHE_TTL = 86400  # 1 day in seconds
 INTERVAL = 0.02  # 20 ms
 DURATION = 30  # seconds
-RATE = 8000  # 8kHz RTP clock rate
+RATE = 8000  # Hz, RTP clock rate
 PAYLOAD_TYPE = 0
 SSRC = 12345
 
@@ -28,6 +28,7 @@ def wait_until_next_minute():
 def get_own_ip():
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            # Try to determine the primary IP used for outbound connections
             s.connect(("10.255.255.255", 1))
             return s.getsockname()[0]
     except Exception:
@@ -41,24 +42,37 @@ def is_cache_valid(file_path, ttl):
 
 def fetch_destinations():
     if is_cache_valid(CACHE_FILE, CACHE_TTL):
-        with open(CACHE_FILE, "r") as f:
-            print("[SENDER] Using cached destinations.")
-            return json.load(f)
+        try:
+            with open(CACHE_FILE, "r") as f:
+                content = f.read()
+                data = json.loads(content)
+                print("[SENDER] Using cached destinations.")
+                return data
+        except json.JSONDecodeError as e:
+            print("[SENDER] Cached file is corrupted. Will attempt to fetch from GitHub...")
+            os.remove(CACHE_FILE)
+
     try:
         print(f"[SENDER] Fetching destinations from GitHub: {DESTINATIONS_URL}")
-        response = requests.get(DESTINATIONS_URL)
+        response = requests.get(DESTINATIONS_URL, timeout=5)
         response.raise_for_status()
+        data = response.json()  # Validate JSON here
         with open(CACHE_FILE, "w") as f:
-            f.write(response.text)
-        print("[SENDER] Updated destinations from GitHub.")
-        return json.loads(response.text)
+            json.dump(data, f, indent=2)
+        print("[SENDER] Destinations file updated from GitHub.")
+        return data
     except Exception as e:
-        print(f"[SENDER] Failed to fetch update: {e}")
+        print(f"[SENDER] Failed to fetch destinations: {e}")
         if os.path.exists(CACHE_FILE):
-            with open(CACHE_FILE, "r") as f:
-                print("[SENDER] Fallback to cached destinations.")
-                return json.load(f)
-        raise RuntimeError("No destinations available.")
+            try:
+                with open(CACHE_FILE, "r") as f:
+                    content = f.read()
+                    data = json.loads(content)
+                    print("[SENDER] Using fallback cached destinations.")
+                    return data
+            except Exception as err:
+                print(f"[SENDER] Fallback cache is also unreadable: {err}")
+        raise RuntimeError("No valid destinations available.")
 
 def create_rtp_packet(seq, timestamp):
     version = 2
@@ -67,7 +81,7 @@ def create_rtp_packet(seq, timestamp):
              (cc << 8) | (marker << 7) | PAYLOAD_TYPE
     rtp_header = struct.pack("!HHL", header, seq, timestamp)
     ssrc_bytes = struct.pack("!L", SSRC)
-    payload = bytes([random.randint(0, 255)] * 160)  # 160 bytes for 20ms at 8kHz
+    payload = bytes([random.randint(0, 255)] * 160)
     return rtp_header + ssrc_bytes + payload
 
 def send_to_target(sock, target):
@@ -88,14 +102,18 @@ def main():
     own_ip = get_own_ip()
     print(f"[SENDER] Own IP: {own_ip}")
 
+    # Fetch and filter destinations
     destinations = fetch_destinations()
     destinations = [d for d in destinations if d["ip"] != own_ip]
 
     if not destinations:
-        print("[SENDER] No valid destinations (excluding self). Exiting.")
+        print("[SENDER] No valid destinations (excluding sender's own IP). Exiting.")
         return
 
+    # Wait for synchronized start
     wait_until_next_minute()
+
+    # Send to all targets
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     threads = []
     for target in destinations:
