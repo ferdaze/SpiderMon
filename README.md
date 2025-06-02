@@ -32,7 +32,7 @@ If you're using a virtual environment:
 ### 3. Create Systemd Service Unit File
 Create a new file called:
 ```
-sudo nano /etc/systemd/system/spider-mon-receiver.service
+sudo vi /etc/systemd/system/spider-mon-receiver.service
 ```
 Paste the following contents:
 ```
