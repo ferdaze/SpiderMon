@@ -7,7 +7,7 @@ Grafana output
 ## Install
 ### Required Libraries:
 ```
-sudo apt install python3-numpy
+sudo apt install python3-numpy python3-prometheus-client
 ```
 
 ### 1.Ensure sender.py and receiver.py are executable
