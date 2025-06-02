@@ -89,7 +89,7 @@ sudo systemctl status spider-mon-receiver.service
 
 ### 5 Add sender.py to crontab
 ```
-* * * * * /home/user/rtp-env/bin/python3 /opt/spider-mon/sender.py >> /var/log/spider-mon-sender.log 2>&1
+* * * * * /usr/bin/python3 /opt/spider-mon/sender.py >> /var/log/spider-mon-sender.log 2>&1
 ```
 
 ### 6 Prometheus Configuration
