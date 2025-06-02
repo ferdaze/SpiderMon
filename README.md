@@ -64,6 +64,7 @@ Set up /var/log/spider-mon-sender.log and /var/log/spider-mon-receiver.log:
 sudo touch /var/log/spider-mon-sender.log
 sudo chown root:root /var/log/spider-mon-sender.log
 sudo chmod 644 /var/log/spider-mon-sender.log
+
 sudo touch /var/log/spider-mon-receiver.log
 sudo chown root:root /var/log/spider-mon-receiver.log
 sudo chmod 644 /var/log/spider-mon-receiver.log
@@ -87,3 +88,43 @@ sudo systemctl status spider-mon-receiver.service
 ```
 * * * * * /home/user/rtp-env/bin/python3 /opt/spider-mon/sender.py >> /var/log/spider-mon-sender.log 2>&1
 ```
+
+### 6 Prometheus Configuration
+Add this to your Prometheus config (prometheus.yml):
+```
+  - job_name: 'rtp_receiver_metrics_pdx'
+   scrape_interval: 1m
+    static_configs:
+      - targets: ['10.25.34.250:8000']
+ 
+  - job_name: 'rtp_receiver_metrics_slc'
+   scrape_interval: 1m
+    static_configs:
+      - targets: ['10.24.34.250:8000']
+ 
+  - job_name: 'rtp_receiver_metrics_tor'
+   scrape_interval: 1m
+    static_configs:
+      - targets: ['10.28.34.250:8000']
+```
+### 7 Grafana Dashboard
+In your Grafana panel (e.g., time series panel):
+1. Edit the panel
+2. Under the query section, locate the Legend field (just below the Prometheus query)
+3. Enter this custom legend format:
+```
+{{job}} - Source {{source_ip}}
+```
+This will pull from each time series' labels and create exactly the formatting we confirmed.
+
+Example Prometheus Query
+```
+rtp_jitter_ms
+```
+And in the “Legend” box:
+```
+{{job}} - Source {{source_ip}}
+```
+Now your graph will show:
+* rtp_receiver_metrics_slc - Source 10.25.34.250
+* rtp_receiver_metrics_pdx - Source 10.24.34.250
