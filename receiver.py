@@ -31,11 +31,11 @@ def calculate_mos(packet_loss, jitter):
     r = 93.2 - packet_loss * 2.5 - jitter * 0.1
     r = max(0.0, min(r, 100.0))
     mos = 1 + 0.035 * r + (r * (r - 60) * (100 - r) * 7e-6)
-    return round(min(max(mos, 1.0), 4.5), 2)
+    return max(min(mos, 4.5), 1.0)
 
 def receive_rtp_once():
     """
-    Run a single 30-second RTP listening session and update Prometheus metrics.
+    Run a single 45-second RTP listening session and update Prometheus metrics.
     """
     start_log_ts = datetime.now(timezone.utc).isoformat()
     print(f"[RECEIVER] RTP test started at {start_log_ts}Z")
