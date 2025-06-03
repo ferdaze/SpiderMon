@@ -58,7 +58,7 @@ Nice=10
 WantedBy=multi-user.target
 ```
 Notes:
-* Update python3 to the full path if needed (e.g. /opt/rtp_test/venv/bin/python).
+* Update python3 to the full path if needed (e.g. /usr/bin/python3).
 * Append mode keeps logs instead of overwriting.
 * sudo is required for /var/log writing.
 
