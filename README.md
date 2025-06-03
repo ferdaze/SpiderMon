@@ -14,9 +14,10 @@ sudo apt install python3-numpy python3-prometheus-client
 Save sender.py and receiver.py somewhere permanent, for example:
 ```
 sudo mkdir -p /opt/spider-mon/
-sudo cp sender.py /opt/spider-mon/
+cd /opt/spider-mon/
+sudo wget https://raw.githubusercontent.com/ferdaze/Spider-Mon/refs/heads/main/sender.py
 sudo chmod +x /opt/spider-mon/sender.py
-sudo cp receiver.py /opt/spider-mon/
+sudo wget https://raw.githubusercontent.com/ferdaze/Spider-Mon/refs/heads/main/receiver.py
 sudo chmod +x /opt/spider-mon/receiver.py
 ```
 
