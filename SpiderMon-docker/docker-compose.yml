@@ -4,7 +4,7 @@ services:
 
   sender:
     build: ./sender
-    container_name: rtp-sender
+    container_name: spidermon-sender
     restart: unless-stopped
     depends_on:
       - receiver
@@ -13,7 +13,7 @@ services:
 
   receiver:
     build: ./receiver
-    container_name: rtp-receiver
+    container_name: spidermon-receiver
     restart: always
     ports:
       - "8000:8000"      # Prometheus exporter
