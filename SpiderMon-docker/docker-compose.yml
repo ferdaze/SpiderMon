@@ -1,1 +1,20 @@
+version: "3.9"
 
+services:
+
+  sender:
+    build: ./sender
+    container_name: rtp-sender
+    restart: unless-stopped
+    depends_on:
+      - receiver
+    network_mode: host   # Sends to host's IP/network
+    # For execution every X minutes, you can schedule via cron or customize inside sender.py
+
+  receiver:
+    build: ./receiver
+    container_name: rtp-receiver
+    restart: always
+    ports:
+      - "8000:8000"      # Prometheus exporter
+      - "5004:5004/udp"  # RTP listener
