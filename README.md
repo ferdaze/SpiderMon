@@ -15,9 +15,9 @@ Save sender.py and receiver.py somewhere permanent, for example:
 ```
 sudo mkdir -p /opt/spider-mon/
 cd /opt/spider-mon/
-sudo wget https://raw.githubusercontent.com/ferdaze/Spider-Mon/refs/heads/main/sender.py
+sudo wget https://raw.githubusercontent.com/ferdaze/SpiderMon/refs/heads/main/sender.py
 sudo chmod +x /opt/spider-mon/sender.py
-sudo wget https://raw.githubusercontent.com/ferdaze/Spider-Mon/refs/heads/main/receiver.py
+sudo wget https://raw.githubusercontent.com/ferdaze/SpiderMon/refs/heads/main/receiver.py
 sudo chmod +x /opt/spider-mon/receiver.py
 ```
 
