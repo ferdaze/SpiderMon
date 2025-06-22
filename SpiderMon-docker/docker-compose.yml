@@ -6,15 +6,27 @@ services:
     build: ./sender
     container_name: spidermon-sender
     restart: unless-stopped
-    depends_on:
-      - receiver
-    network_mode: host   # Sends to host's IP/network
-    # For execution every X minutes, you can schedule via cron or customize inside sender.py
+    network_mode: host
+    environment:
+      DESTINATIONS_URL: "https://raw.githubusercontent.com/ferdaze/Spider-Mon/refs/heads/main/destinations.json"
+      CACHE_FILE: "cached_destinations.json"
+      CACHE_TTL: "86400"  # 1 day
+      INTERVAL: "0.02"  # 20 ms
+      DURATION: "45"  # seconds
+      RATE: "8000"  # RTP timestamp rate for audio
+      PAYLOAD_TYPE: "0"
+      SSRC: "12345"
+      START_DELAY_SECONDS: "61"  # Start 1 second after receiver
 
   receiver:
     build: ./receiver
     container_name: spidermon-receiver
     restart: always
     ports:
-      - "8000:8000"      # Prometheus exporter
-      - "5004:5004/udp"  # RTP listener
+      - "8000:8000"
+      - "5004:5004/udp"
+    environment:
+      PORT: "5004"
+      DURATION: "30"
+      INTERVAL: "0.02"
+      TEST_INTERVAL: "60"
