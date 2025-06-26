@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y cron && \
     pip install --no-cache-dir requests && \
     apt-get clean
 
-COPY sender.py .
+COPY spidermon-sender.py .
 COPY run-cron.sh .
 
 # Add crontab file
