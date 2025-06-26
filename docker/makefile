@@ -2,10 +2,10 @@
 # CONFIG
 # ----------------------------------------
 
-REGISTRY      ?= docker.io/ferdaze/SpiderMon
+REGISTRY      ?= docker.io/ferdaze
 VERSION       ?= 1.4
-SENDER_IMAGE  := $(REGISTRY)/docker/spidermon-sender/spidermon-sender:$(VERSION)
-RECEIVER_IMAGE:= $(REGISTRY)/docker/soidermon-receiver/spidermon-receiver:$(VERSION)
+SENDER_IMAGE  := $(REGISTRY)/SpiderMon/docker/spidermon-sender/spidermon-sender:$(VERSION)
+RECEIVER_IMAGE:= $(REGISTRY)/SpiderMon/docker/soidermon-receiver/spidermon-receiver:$(VERSION)
 
 # ----------------------------------------
 # RULES
