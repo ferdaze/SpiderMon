@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   sender:
-    build: ./sender
+    build: ./spidermon-sender
     container_name: spidermon-sender
     restart: unless-stopped
     network_mode: host
@@ -19,7 +19,7 @@ services:
       START_DELAY_SECONDS: "61"  # Start 1 second after receiver
 
   receiver:
-    build: ./receiver
+    build: ./spidermon-receiver
     container_name: spidermon-receiver
     restart: always
     ports:
