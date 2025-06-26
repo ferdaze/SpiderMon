@@ -3,7 +3,7 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Install dependencies
-COPY receiver.py .
+COPY spidermon-receiver.py .
 
 RUN pip install --no-cache-dir \
     prometheus_client \
@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir \
 EXPOSE 5004/udp
 EXPOSE 8000
 
-CMD ["python", "receiver.py"]
+CMD ["python", "spidermon-receiver.py"]
