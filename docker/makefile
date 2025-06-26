@@ -3,7 +3,7 @@
 # ----------------------------------------
 
 REGISTRY      ?= docker.io/repositories/ferdaze
-VERSION       ?= 1.4
+VERSION       ?= 1.0
 SENDER_IMAGE  := $(REGISTRY)/spidermon-sender:$(VERSION)
 RECEIVER_IMAGE:= $(REGISTRY)/spidermon-receiver:$(VERSION)
 
