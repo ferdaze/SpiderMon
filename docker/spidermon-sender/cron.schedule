@@ -1,1 +1,1 @@
-* * * * * root python /app/sender.py >> /var/log/sender.log 2>&1
+* * * * * root python /app/sender.py >> /var/log/spidermon-sender.log 2>&1
