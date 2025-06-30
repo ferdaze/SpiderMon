@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ---- CONFIG ----
-REGISTRY="docker.io/repositories/ferdaze"
-VERSION="latest"
+REGISTRY="ferdaze"
+VERSION="1.0"
 
 SENDER_IMAGE="${REGISTRY}/spidermon-sender:${VERSION}"
 RECEIVER_IMAGE="${REGISTRY}/spidermon-receiver:${VERSION}"
@@ -13,6 +13,10 @@ docker buildx build -t $SENDER_IMAGE ./spidermon-sender || exit 1
 
 echo "🔨 Building receiver image..."
 docker buildx build -t $RECEIVER_IMAGE ./spidermon-receiver || exit 1
+
+# ---- LOGIN ----
+echo "Docker.io login..."
+docker login -u "ferdaze" docker.io || exit 1
 
 # ---- PUSH ----
 echo "📤 Pushing sender image to registry..."
